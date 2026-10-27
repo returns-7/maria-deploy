@@ -1,0 +1,7 @@
+# 서버에만 두는 파일
+.env
+app/tags.env
+app/nginx/admin-allowlist.conf
+# 셋업할 때 앱 저장소에서 복사해 오는 DDL (원본은 앱 저장소)
+db/init/mariadb/*.sql
+db/init/postgres/*.sql
