@@ -42,6 +42,7 @@ services:
       EXIM_API_KEY: ${EXIM_API_KEY}
       KIS_APP_KEY: ${KIS_APP_KEY}
       KIS_APP_SECRET: ${KIS_APP_SECRET}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
       RETURNS_SECURITY_URL: http://return-securities:10001
       MYDATA_URL: http://mydata:10002
     networks: [edge, backend]
