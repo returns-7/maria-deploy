@@ -43,6 +43,7 @@ services:
       KIS_APP_KEY: ${KIS_APP_KEY}
       KIS_APP_SECRET: ${KIS_APP_SECRET}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      CI_PEPPER: ${CI_PEPPER}
       RETURNS_SECURITY_URL: http://return-securities:10001
       MYDATA_URL: http://mydata:10002
     networks: [edge, backend]
