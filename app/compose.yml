@@ -44,6 +44,8 @@ services:
       KIS_APP_SECRET: ${KIS_APP_SECRET}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       CI_PEPPER: ${CI_PEPPER}
+      # false면 위험등급 기준일이 며칠 지났는지 보지 않는다(risk 배치를 안 돌리는 시연 환경용, 기본 true)
+      RISK_FRESHNESS_CHECK: ${RISK_FRESHNESS_CHECK:-true}
       RETURNS_SECURITY_URL: http://return-securities:10001
       MYDATA_URL: http://mydata:10002
     networks: [edge, backend]
