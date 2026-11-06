@@ -46,6 +46,8 @@ services:
       CI_PEPPER: ${CI_PEPPER}
       RETURNS_SECURITY_URL: http://return-securities:10001
       MYDATA_URL: http://mydata:10002
+      INTERNAL_SECRET: ${INTERNAL_SECRET}
+      INTERNAL_EXCLUDED_CI_HASHES: ${INTERNAL_EXCLUDED_CI_HASHES:-}
     networks: [edge, backend]
     depends_on:
       redis: { condition: service_healthy }
@@ -83,6 +85,11 @@ services:
       DB_URL: jdbc:mariadb://${DB_HOST}:3306/securities?characterEncoding=UTF-8
       DB_USERNAME: securities_app
       DB_PASSWORD: ${SECURITIES_DB_PASSWORD}
+      # 거래 생성기(기본 꺼짐). 켜면 maria 내부 API로 주문을 보낸다.
+      MARIA_INTERNAL_URL: http://maria:10000
+      INTERNAL_SECRET: ${INTERNAL_SECRET}
+      MARKET_TRADE_ENABLED: ${MARKET_TRADE_ENABLED:-false}
+      MARKET_TRADE_EXCLUDED_CI_HASHES: ${INTERNAL_EXCLUDED_CI_HASHES:-}
     healthcheck:
       test: ["CMD", "curl", "-fsS", "http://localhost:10001/actuator/health"]
       interval: 10s

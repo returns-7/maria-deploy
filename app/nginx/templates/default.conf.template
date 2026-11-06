@@ -42,6 +42,11 @@ server {
         return 404;
     }
 
+    # 서비스 간 내부 API(증권사 거래 생성기 전용): 외부에서는 보이지 않게 한다
+    location /api/internal/ {
+        return 404;
+    }
+
     # 2차 고객 API: 공개
     location /api/customer/ {
         proxy_pass $maria;
