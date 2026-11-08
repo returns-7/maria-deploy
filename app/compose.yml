@@ -33,7 +33,7 @@ services:
     environment:
       TZ: Asia/Seoul
       SPRING_PROFILES_ACTIVE: prod
-      DB_URL: jdbc:mariadb://${DB_HOST}:3306/ria_admin?characterEncoding=UTF-8
+      DB_URL: jdbc:mariadb://${DB_HOST}:3306/ria_admin?characterEncoding=UTF-8&sessionVariables=time_zone='+09:00'
       DB_USERNAME: maria_app
       DB_PASSWORD: ${MARIA_DB_PASSWORD}
       REDIS_HOST: redis
@@ -43,12 +43,23 @@ services:
       KIS_APP_KEY: ${KIS_APP_KEY}
       KIS_APP_SECRET: ${KIS_APP_SECRET}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
+      OPENDART_API_KEY: ${OPENDART_API_KEY:-}
       CI_PEPPER: ${CI_PEPPER}
       RETURNS_SECURITY_URL: http://return-securities:10001
       MYDATA_URL: http://mydata:10002
       INTERNAL_SECRET: ${INTERNAL_SECRET}
       INTERNAL_EXCLUDED_CI_HASHES: ${INTERNAL_EXCLUDED_CI_HASHES:-}
+      # 위험등급: 달력 CSV는 risk와 같은 폴더를 읽는다. CSV를 바꾸면 아래 해시도 같이 바꾼다
+      RISK_URL: http://risk:8000
+      RISK_SERVICE_KEY: ${RISK_SERVICE_KEY:-}
+      RISK_CALENDAR_PATH: /etc/risk-calendar/open-days.csv
+      RISK_TRADING_HOURS_PATH: /etc/risk-calendar/trading-hours.csv
+      RISK_CALENDAR_VERSION: e38f605c3bc3bd387370667211304b5e173446b9dbd6c95edfbdc92f6d44e358
+      RISK_SYNC_ENABLED: ${RISK_SYNC_ENABLED:-false}
+    volumes:
+      - ./risk-calendar:/etc/risk-calendar:ro
     networks: [edge, backend]
+    # risk가 죽어도 maria는 떠야 하므로 depends_on에 risk를 넣지 않는다
     depends_on:
       redis: { condition: service_healthy }
     healthcheck:
@@ -97,6 +108,27 @@ services:
       retries: 5
       start_period: 90s
 
+  # 컨테이너 1개·worker 1개 고정(스케줄러·SQLite 중복 실행 방지). 포트는 열지 않는다
+  risk:
+    <<: *app
+    image: ghcr.io/returns-7/risk:${RISK_TAG}
+    mem_limit: 512m   # 시작값, docker stats로 확정
+    # 현재 종목까지 마치고 멈추는 시간(앱 120초) + 여유
+    stop_grace_period: 130s
+    environment:
+      TZ: Asia/Seoul
+      RISK_SERVICE_KEY: ${RISK_SERVICE_KEY:-}
+      RISK_CALENDAR_PATH: /etc/risk-calendar/open-days.csv
+      RISK_TRADING_HOURS_PATH: /etc/risk-calendar/trading-hours.csv
+      KIS_ENV: ${RISK_KIS_ENV:-demo}
+      KIS_APP_KEY: ${KIS_APP_KEY}
+      KIS_APP_SECRET: ${KIS_APP_SECRET}
+      # 켜기 전에 팀 합의(INFRA_CHECKLIST 8번). 임의로 켜지 않는다
+      RISK_SCHEDULER_ENABLED: ${RISK_SCHEDULER_ENABLED:-false}
+    volumes:
+      - risk-data:/data
+      - ./risk-calendar:/etc/risk-calendar:ro
+
   redis:
     <<: *app
     image: redis:7-alpine
@@ -114,3 +146,6 @@ services:
 networks:
   edge:
   backend:
+
+volumes:
+  risk-data:   # 지우지 않는다: down -v, docker volume rm 금지
