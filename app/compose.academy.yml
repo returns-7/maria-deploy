@@ -1,0 +1,6 @@
+# 학원 VM 전용 덮어쓰기: docker compose -f compose.yml -f compose.academy.yml up -d
+services:
+  nginx:
+    volumes:
+      - ./nginx/templates-academy:/etc/nginx/templates:ro
+      - ./react-dist:/usr/share/nginx/html/my:ro

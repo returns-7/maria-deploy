@@ -1,0 +1,55 @@
+# 학원 VM 전용. 학원 프록시가 HTTPS를 처리하고 80으로 넘긴다
+
+# 로그인 API: 모든 요청이 프록시 IP 하나로 보이므로 NCP보다 넉넉하게
+limit_req_zone $binary_remote_addr zone=login:10m rate=60r/m;
+
+resolver 127.0.0.11 valid=10s ipv6=off;
+
+server {
+    listen 80;
+    server_tokens off;
+    client_max_body_size 10m;
+
+    set $maria http://maria:10000;
+
+    proxy_set_header Host              $host;
+    proxy_set_header X-Real-IP         $remote_addr;
+    proxy_set_header X-Forwarded-For   $proxy_add_x_forwarded_for;
+    # 브라우저는 항상 학원 프록시와 HTTPS로 통신한다
+    proxy_set_header X-Forwarded-Proto https;
+
+    if ($request_uri ~* "(\.\.|%2e|%2f|%5c)") {
+        return 400;
+    }
+
+    location /actuator/ {
+        return 404;
+    }
+
+    # 서비스 간 API는 외부에 열지 않는다 (NCP는 허용목록이 막아 줬지만 여기는 없음)
+    location /api/internal/ {
+        return 404;
+    }
+
+    # 고객 React 정적 파일 (학원 빌드: vite build --base=/my/)
+    location /my/ {
+        root /usr/share/nginx/html;
+        try_files $uri $uri/ /my/index.html;
+    }
+
+    # React 코드가 /assets/...를 절대 경로로 부른다. --base=/my/ 빌드는 이 문자열을 바꾸지 않으므로 여기서 받는다
+    location /assets/ {
+        alias /usr/share/nginx/html/my/assets/;
+    }
+
+    location = /api/auth/admin/login {
+        limit_req zone=login burst=20 nodelay;
+        limit_req_status 429;
+        proxy_pass $maria;
+    }
+
+    # 관리자 화면·API, 고객 API(/api/customer/)
+    location / {
+        proxy_pass $maria;
+    }
+}

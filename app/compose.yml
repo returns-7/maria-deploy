@@ -44,6 +44,22 @@ services:
       KIS_APP_SECRET: ${KIS_APP_SECRET}
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       OPENDART_API_KEY: ${OPENDART_API_KEY:-}
+      # 뉴스: 공급자는 free(freenewsapi.ai) 기본값 그대로. 키가 없으면 미리 요약(5분 주기)을 끈다
+      FREENEWS_API_KEY: ${FREENEWS_API_KEY:-}
+      NEWS_PREWARM_ENABLED: ${NEWS_PREWARM_ENABLED:-true}
+      # 가입 인증 메일·알림 메일. SMTP_ENABLED=true면 HOST·FROM(·인증이면 USERNAME·PASSWORD)이 필수
+      # 기본값은 코드(NotificationMailConfig)와 같게 둔다. 빈 문자열을 넘기면 숫자·불리언 변환이 실패한다
+      SMTP_ENABLED: ${SMTP_ENABLED:-false}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_USERNAME: ${SMTP_USERNAME:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      SMTP_AUTH: ${SMTP_AUTH:-true}
+      SMTP_STARTTLS: ${SMTP_STARTTLS:-true}
+      SMTP_SSL: ${SMTP_SSL:-false}
+      # 알림 메일 안의 링크가 가리킬 고객 웹 주소. 기본값(localhost)이면 메일 링크가 깨진다
+      CUSTOMER_WEB_BASE_URL: ${CUSTOMER_WEB_BASE_URL:-http://localhost:5173}
       CI_PEPPER: ${CI_PEPPER}
       RETURNS_SECURITY_URL: http://return-securities:10001
       MYDATA_URL: http://mydata:10002
