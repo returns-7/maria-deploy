@@ -9,7 +9,7 @@ x-app: &app
 
 services:
   nginx:
-    image: nginx:1.28-alpine
+    image: nginx:1.30-alpine
     restart: unless-stopped
     environment:
       TZ: Asia/Seoul
