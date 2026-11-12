@@ -4,3 +4,9 @@ services:
     volumes:
       - ./nginx/templates-academy:/etc/nginx/templates:ro
       - ./react-dist:/usr/share/nginx/html/my:ro
+  # 시드 459종목 목록(이미지 기본값은 77종목). 시드가 바뀌면 CSV도 같이 바꾼다
+  risk:
+    environment:
+      RISK_UNIVERSE_PATH: /universe/risk-universe-seed.csv
+    volumes:
+      - ./risk-universe/risk-universe-seed.csv:/universe/risk-universe-seed.csv:ro
