@@ -10,3 +10,7 @@ services:
       RISK_UNIVERSE_PATH: /universe/risk-universe-seed.csv
     volumes:
       - ./risk-universe/risk-universe-seed.csv:/universe/risk-universe-seed.csv:ro
+  # 고객 API CORS 허용 출처(기본값 localhost:5173). 브라우저가 이 도메인으로 보내는 POST를 허용한다
+  maria:
+    environment:
+      APP_CUSTOMER_ALLOWED_ORIGINS: https://returns.shinhanacademy.co.kr
