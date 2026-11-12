@@ -14,3 +14,5 @@ services:
   maria:
     environment:
       APP_CUSTOMER_ALLOWED_ORIGINS: https://returns.shinhanacademy.co.kr
+      # 학원 프록시가 HTTPS를 처리하므로 브라우저 입장에서는 항상 HTTPS. 세션 쿠키에 Secure를 붙인다
+      SERVER_SERVLET_SESSION_COOKIE_SECURE: "true"
