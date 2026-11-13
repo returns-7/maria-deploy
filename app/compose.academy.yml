@@ -16,3 +16,5 @@ services:
       APP_CUSTOMER_ALLOWED_ORIGINS: https://returns.shinhanacademy.co.kr
       # 학원 프록시가 HTTPS를 처리하므로 브라우저 입장에서는 항상 HTTPS. 세션 쿠키에 Secure를 붙인다
       SERVER_SERVLET_SESSION_COOKIE_SECURE: "true"
+      # 학원은 KIS 실전 키를 쓴다. maria 기본 주소(custom.price.url)는 모의투자 서버라 실전 주소로 덮어쓴다
+      CUSTOM_PRICE_URL: https://openapi.koreainvestment.com:9443
