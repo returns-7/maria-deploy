@@ -42,6 +42,11 @@ server {
         alias /usr/share/nginx/html/my/assets/;
     }
 
+    # 종목 로고도 assetUrl()이 /stock-logos/...(base 없이)로 부른다. 없으면 maria로 넘어가 로고가 이니셜로 대체된다
+    location /stock-logos/ {
+        alias /usr/share/nginx/html/my/stock-logos/;
+    }
+
     location = /api/auth/admin/login {
         limit_req zone=login burst=20 nodelay;
         limit_req_status 429;
