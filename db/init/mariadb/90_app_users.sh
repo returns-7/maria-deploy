@@ -7,6 +7,8 @@ GRANT ALL PRIVILEGES ON ria_admin.* TO 'maria_app'@'%';
 
 CREATE USER 'securities_app'@'%' IDENTIFIED BY '${SECURITIES_DB_PASSWORD}';
 GRANT SELECT ON securities.* TO 'securities_app'@'%';
+-- 증권사 앱의 유일한 쓰기: maria 주문 체결 기록(DomesticTradeMapper.insertGeneratedTrade)
+GRANT INSERT ON securities.domestic_trade TO 'securities_app'@'%';
 
 FLUSH PRIVILEGES;
 SQL
