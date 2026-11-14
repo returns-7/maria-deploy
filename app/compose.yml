@@ -140,6 +140,8 @@ services:
       RISK_SERVICE_KEY: ${RISK_SERVICE_KEY:-}
       RISK_CALENDAR_PATH: /etc/risk-calendar/open-days.csv
       RISK_TRADING_HOURS_PATH: /etc/risk-calendar/trading-hours.csv
+      # 시드 459종목 목록(이미지 기본값은 77종목이라 시드 고객의 종목 대부분이 등급 없음). 시드가 바뀌면 CSV도 같이 바꾼다
+      RISK_UNIVERSE_PATH: /universe/risk-universe-seed.csv
       KIS_ENV: ${RISK_KIS_ENV:-demo}
       KIS_APP_KEY: ${KIS_APP_KEY}
       KIS_APP_SECRET: ${KIS_APP_SECRET}
@@ -148,6 +150,7 @@ services:
     volumes:
       - risk-data:/data
       - ./risk-calendar:/etc/risk-calendar:ro
+      - ./risk-universe/risk-universe-seed.csv:/universe/risk-universe-seed.csv:ro
 
   redis:
     <<: *app
