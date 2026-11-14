@@ -60,6 +60,10 @@ services:
       SMTP_SSL: ${SMTP_SSL:-false}
       # 알림 메일 안의 링크가 가리킬 고객 웹 주소. 기본값(localhost)이면 메일 링크가 깨진다
       CUSTOMER_WEB_BASE_URL: ${CUSTOMER_WEB_BASE_URL:-http://localhost:5173}
+      # 고객 웹(Vercel)이 다른 도메인이라 브라우저 Origin이 서버 Host와 다르다. 허용 출처에 없으면 POST가 403이다
+      APP_CUSTOMER_ALLOWED_ORIGINS: ${APP_CUSTOMER_ALLOWED_ORIGINS:-http://localhost:5173}
+      SECURE_COOKIE: ${SECURE_COOKIE:-false}
+      SERVER_SERVLET_SESSION_COOKIE_SECURE: ${SECURE_COOKIE:-false}
       CI_PEPPER: ${CI_PEPPER}
       RETURNS_SECURITY_URL: http://return-securities:10001
       MYDATA_URL: http://mydata:10002
